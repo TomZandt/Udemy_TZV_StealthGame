@@ -6,6 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "FPSObjectiveActor.generated.h"
 
+// Forward Declare
+class UStaticMeshComponent;
+class USphereComponent;
+
 UCLASS()
 class FPSGAME_API AFPSObjectiveActor : public AActor
 {
@@ -16,6 +20,12 @@ public:
 	AFPSObjectiveActor();
 
 protected:
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UStaticMeshComponent * MeshComp;	// Create a mesh component to visually show the objective.
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	USphereComponent* SphereComp;		// Create a sphere component for collision.
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
