@@ -13,7 +13,6 @@ class AFPSProjectile;
 class USoundBase;
 class UAnimSequence;
 
-
 UCLASS()
 class AFPSCharacter : public ACharacter
 {
@@ -47,6 +46,9 @@ public:
 	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
 	UAnimSequence* FireAnimation;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Gameplay")
+	bool bIsCarryingObjective;
 
 protected:
 	
