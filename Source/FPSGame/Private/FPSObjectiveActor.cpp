@@ -3,6 +3,7 @@
 #include "FPSObjectiveActor.h"
 #include <Components/StaticMeshComponent.h>
 #include <Components/SphereComponent.h>
+#include <Kismet/GameplayStatics.h>
 
 
 // Sets default values
@@ -11,12 +12,14 @@ AFPSObjectiveActor::AFPSObjectiveActor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// Create and name
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
-	SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
-
-	// Make MeshComp the root component and attach the sphere to it
+	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	RootComponent = MeshComp;
+
+	SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
+	SphereComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	SphereComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+	SphereComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	SphereComp->SetupAttachment(MeshComp);
 }
 
@@ -24,13 +27,28 @@ AFPSObjectiveActor::AFPSObjectiveActor()
 void AFPSObjectiveActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	//TEST CODE
+	PlayEffects();
+}
+
+void AFPSObjectiveActor::PlayEffects()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(this, PickupFX, GetActorLocation());
 }
 
 // Called every frame
 void AFPSObjectiveActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
 
+void AFPSObjectiveActor::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	// Play base that we are overriding using super::
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	// Implement our own override:
+	PlayEffects();
 }
 
