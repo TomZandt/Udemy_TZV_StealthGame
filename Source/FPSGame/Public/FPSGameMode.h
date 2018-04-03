@@ -6,6 +6,9 @@
 #include "GameFramework/GameModeBase.h"
 #include "FPSGameMode.generated.h"
 
+// Forward Declarations
+class APawn;
+
 UCLASS()
 class AFPSGameMode : public AGameModeBase
 {
@@ -14,6 +17,15 @@ class AFPSGameMode : public AGameModeBase
 public:
 
 	AFPSGameMode();
+
+	// Called when mission is complete
+	// @InstigatorPawn - The pawn that instigated the mission complete
+	void CompleteMission(APawn* InstigatorPawn);
+
+	// Auto called when mission is complete (Implemented in Blueprint)
+	// @InstigatorPawn - The pawn that instigated the mission complete
+	UFUNCTION(BlueprintImplementableEvent, Category = "GameMode")
+	void bpCompleteMission(APawn* InstigatorPawn);
 };
 
 
