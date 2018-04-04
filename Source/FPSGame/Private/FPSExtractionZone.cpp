@@ -5,6 +5,7 @@
 #include "Components/DecalComponent.h"
 #include "FPSCharacter.h"
 #include "FPSGameMode.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AFPSExtractionZone::AFPSExtractionZone()
@@ -31,16 +32,32 @@ void AFPSExtractionZone::HandleOverlap(UPrimitiveComponent* OverlappedComponent,
 										UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 										bool bFromSweep, const FHitResult & SweepResult)
 {
-	UE_LOG(LogTemp, Log, TEXT("##_TZV_## - Overlapped with extraction zone."));
-
+	// Get pawn...
 	AFPSCharacter* MyPawn = Cast<AFPSCharacter>(OtherActor);
-	if (MyPawn && MyPawn->bIsCarryingObjective)
+
+	// If there is no pawn...
+	if (MyPawn == nullptr)
+	{
+		// Return.
+		return;
+	}
+
+	// If my pawn has the objective...
+	if (MyPawn->bIsCarryingObjective)
 	{
 		// Get the game mode (single player only)
 		AFPSGameMode* GM = Cast<AFPSGameMode>(GetWorld()->GetAuthGameMode());
 		if (GM)
 		{
 			GM->CompleteMission(MyPawn);
-		}
+		}		
 	}
+	else
+	{
+		// Play objective missing sound
+		UGameplayStatics::PlaySound2D(this, ObjectiveMissingSound);
+	}
+
+	// Send a log message to UE4
+	UE_LOG(LogTemp, Log, TEXT("##_TZV_## - Overlapped with extraction zone."));
 }

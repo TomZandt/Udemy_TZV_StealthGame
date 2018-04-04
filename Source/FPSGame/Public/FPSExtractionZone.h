@@ -9,6 +9,7 @@
 //Forward Declarations
 class UBoxComponent;
 class UDecalComponent;
+class USoundBase;
 
 UCLASS()
 class FPSGAME_API AFPSExtractionZone : public AActor
@@ -32,6 +33,11 @@ protected:
 	void HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 						UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 						bool bFromSweep, const FHitResult & SweepResult);
+
+	// Stores the sound for entering the extraction without the objective.
+	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
+	USoundBase* ObjectiveMissingSound;
+
 private:
 	FVector ExtractionSizeVector = { 200.0f, 200.0f, 200.0f };
 };
