@@ -8,6 +8,7 @@
 
 // Forward Declarations
 class APawn;
+class AActor;
 
 UCLASS()
 class AFPSGameMode : public AGameModeBase
@@ -26,6 +27,11 @@ public:
 	// @InstigatorPawn - The pawn that instigated the mission complete
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameMode")
 	void bpCompleteMission(APawn* InstigatorPawn);
+
+protected:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spectating")
+	TSubclassOf<AActor> SpectatingViewPointClass;
 };
 
 
