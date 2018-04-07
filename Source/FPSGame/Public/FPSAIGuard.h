@@ -8,6 +8,7 @@
 
 // Forward Declare
 class UPawnSensingComponent;
+class APawn;
 
 UCLASS()
 class FPSGAME_API AFPSAIGuard : public ACharacter
@@ -24,6 +25,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UPawnSensingComponent* PawnSensingComponent;
+
+	UFUNCTION()
+	void OnPawnSeen(APawn* SeenPawn);
 
 public:	
 	// Called every frame
