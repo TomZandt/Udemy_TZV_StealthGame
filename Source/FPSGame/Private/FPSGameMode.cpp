@@ -54,7 +54,4 @@ void AFPSGameMode::CompleteMission(APawn* InstigatorPawn)
 
 	// Auto call the BP version
 	bpCompleteMission(InstigatorPawn);
-
-	
-
 }
