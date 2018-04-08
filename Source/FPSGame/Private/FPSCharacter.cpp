@@ -118,3 +118,22 @@ void AFPSCharacter::MoveRight(float Value)
 		AddMovementInput(GetActorRightVector(), Value);
 	}
 }
+
+// *************************************************************************************************
+void AFPSCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	// If we do not control the character then update...
+	if (!IsLocallyControlled())
+	{
+		// Save the original rotation
+		FRotator NewRotation = CameraComponent->RelativeRotation;
+
+		// Override the pitch and uncompress the byte
+		NewRotation.Pitch = RemoteViewPitch * 360.0f / 255.0f;
+
+		// Set the rotation
+		CameraComponent->SetRelativeRotation(NewRotation);
+	}
+}
