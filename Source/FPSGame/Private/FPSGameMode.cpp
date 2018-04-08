@@ -17,7 +17,7 @@ AFPSGameMode::AFPSGameMode()
 	HUDClass = AFPSHUD::StaticClass();
 }
 
-void AFPSGameMode::CompleteMission(APawn* InstigatorPawn)
+void AFPSGameMode::CompleteMission(APawn* InstigatorPawn, bool bIsMissionSuccess)
 {
 	// If there is a pawn...
 	if (InstigatorPawn)
@@ -53,5 +53,5 @@ void AFPSGameMode::CompleteMission(APawn* InstigatorPawn)
 	}
 
 	// Auto call the BP version
-	bpCompleteMission(InstigatorPawn);
+	bpCompleteMission(InstigatorPawn, bIsMissionSuccess);
 }

@@ -21,12 +21,12 @@ public:
 
 	// Called when mission is complete
 	// @InstigatorPawn - The pawn that instigated the mission complete
-	void CompleteMission(APawn* InstigatorPawn);
+	void CompleteMission(APawn* InstigatorPawn, bool bIsMissionSuccess);
 
 	// Auto called when mission is complete (Implemented in Blueprint)
 	// @InstigatorPawn - The pawn that instigated the mission complete
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameMode")
-	void bpCompleteMission(APawn* InstigatorPawn);
+	void bpCompleteMission(APawn* InstigatorPawn, bool bIsMissionSuccess);
 
 protected:
 
