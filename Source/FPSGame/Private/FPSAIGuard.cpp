@@ -15,6 +15,8 @@ AFPSAIGuard::AFPSAIGuard()
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComponent"));
 	PawnSensingComponent->OnSeePawn.AddDynamic(this, &AFPSAIGuard::OnPawnSeen);
 	PawnSensingComponent->OnHearNoise.AddDynamic(this, &AFPSAIGuard::OnNoiseHeard);
+
+	GuardState = EAIState::Idle;
 }
 
 // Called when the game starts or when spawned
@@ -42,10 +44,20 @@ void AFPSAIGuard::OnPawnSeen(APawn* SeenPawn)
 	{
 		GM->CompleteMission(SeenPawn, false);
 	}
+
+	// Set guard state to alerted
+	SetGuardState(EAIState::Alerted);
 }
 
 void AFPSAIGuard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume)
 {
+	// If im alerted..
+	if (GuardState == EAIState::Alerted)
+	{
+		// Return
+		return;
+	}
+
 	// Debug
 	DrawDebugSphere(GetWorld(), Location, 32.0f, 12, FColor::Green, false, 10.0f);
 
@@ -64,11 +76,38 @@ void AFPSAIGuard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, 
 	// Reset timer and reset orientation after 3 seconds
 	GetWorldTimerManager().ClearTimer(TimerHandle_ResetOrientation);
 	GetWorldTimerManager().SetTimer(TimerHandle_ResetOrientation, this, &AFPSAIGuard::ResetOrientation, 3.0f);
+
+	SetGuardState(EAIState::Suspicious);
 }
 
 void AFPSAIGuard::ResetOrientation()
 {
+	// If im alerted..
+	if (GuardState == EAIState::Alerted)
+	{
+		// Return
+		return;
+	}
+
 	SetActorRotation(OriginalRotation);
+
+	SetGuardState(EAIState::Idle);
+}
+
+void AFPSAIGuard::SetGuardState(EAIState NewState)
+{
+	// If the states are the same...
+	if (GuardState == NewState)
+	{
+		// Return
+		return;
+	}
+
+	// Set to new state
+	GuardState = NewState;
+
+	// Call on state changed for blueprint
+	OnStateChanged(GuardState);
 }
 
 // Called every frame
