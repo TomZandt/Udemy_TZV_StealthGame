@@ -7,6 +7,7 @@
 #include "FPSCharacter.h"
 
 
+// *************************************************************************************************
 // Sets default values
 AFPSObjectiveActor::AFPSObjectiveActor()
 {
@@ -21,17 +22,20 @@ AFPSObjectiveActor::AFPSObjectiveActor()
 	SphereComp->SetupAttachment(MeshComp);
 }
 
+// *************************************************************************************************
 // Called when the game starts or when spawned
 void AFPSObjectiveActor::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
+// *************************************************************************************************
 void AFPSObjectiveActor::PlayEffects()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(this, PickupFX, GetActorLocation());
 }
 
+// *************************************************************************************************
 void AFPSObjectiveActor::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	// Play base that we are overriding using super::

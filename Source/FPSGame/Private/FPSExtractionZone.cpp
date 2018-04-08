@@ -7,6 +7,7 @@
 #include "FPSGameMode.h"
 #include "Kismet/GameplayStatics.h"
 
+// *************************************************************************************************
 // Sets default values
 AFPSExtractionZone::AFPSExtractionZone()
 {
@@ -27,6 +28,7 @@ AFPSExtractionZone::AFPSExtractionZone()
 
 }
 
+// *************************************************************************************************
 // Called when overlapped
 void AFPSExtractionZone::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 										UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,

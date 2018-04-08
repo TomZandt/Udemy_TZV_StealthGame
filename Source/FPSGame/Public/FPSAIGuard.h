@@ -9,6 +9,7 @@
 // Forward Declare
 class UPawnSensingComponent;
 class APawn;
+class AActor;
 
 UENUM(BlueprintType)
 enum class EAIState : uint8 
@@ -58,6 +59,23 @@ protected:
 	// Called if the guards states changes
 	UFUNCTION(BlueprintImplementableEvent, Category = "AI")
 	void OnStateChanged(EAIState NewState);
+
+	// Let the guard go on patrol
+	UPROPERTY(EditInstanceOnly, Category = "AI")
+	bool bPatrol;
+
+	// First patrol point
+	UPROPERTY(EditInstanceOnly, Category = "AI", meta = (EditCondition = "bPatrol"))
+	AActor* FirstPatrolPoint;
+
+	// Second patrol point
+	UPROPERTY(EditInstanceOnly, Category = "AI", meta = (EditCondition = "bPatrol"))
+	AActor* SecondPatrolPoint;
+
+	// The current point the actor is moving to or standing at
+	AActor* CurrentPatrolPoint;
+
+	void MoveToNextPatrolPoint();
 
 public:	
 	// Called every frame

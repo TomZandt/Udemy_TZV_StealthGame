@@ -4,8 +4,9 @@
 #include "Perception/PawnSensingComponent.h"
 #include "DrawDebugHelpers.h"
 #include "FPSGameMode.h"
+#include "AI/Navigation/NavigationSystem.h"
 
-
+// *************************************************************************************************
 // Sets default values
 AFPSAIGuard::AFPSAIGuard()
 {
@@ -16,9 +17,10 @@ AFPSAIGuard::AFPSAIGuard()
 	PawnSensingComponent->OnSeePawn.AddDynamic(this, &AFPSAIGuard::OnPawnSeen);
 	PawnSensingComponent->OnHearNoise.AddDynamic(this, &AFPSAIGuard::OnNoiseHeard);
 
-	GuardState = EAIState::Idle;
+	GuardState = EAIState::Idle;	
 }
 
+// *************************************************************************************************
 // Called when the game starts or when spawned
 void AFPSAIGuard::BeginPlay()
 {
@@ -26,8 +28,15 @@ void AFPSAIGuard::BeginPlay()
 	
 	// Store the original rotation
 	OriginalRotation = GetActorRotation();
+
+	// Check to see if we are supposed to be patrolling
+	if (bPatrol)
+	{
+		MoveToNextPatrolPoint();
+	}
 }
 
+// *************************************************************************************************
 void AFPSAIGuard::OnPawnSeen(APawn* SeenPawn)
 {
 	if (SeenPawn == nullptr)
@@ -47,8 +56,16 @@ void AFPSAIGuard::OnPawnSeen(APawn* SeenPawn)
 
 	// Set guard state to alerted
 	SetGuardState(EAIState::Alerted);
+
+	// Stop patrolling
+	AController* Controller = GetController();
+	if (Controller)
+	{
+		Controller->StopMovement();
+	}
 }
 
+// *************************************************************************************************
 void AFPSAIGuard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume)
 {
 	// If im alerted..
@@ -78,8 +95,16 @@ void AFPSAIGuard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, 
 	GetWorldTimerManager().SetTimer(TimerHandle_ResetOrientation, this, &AFPSAIGuard::ResetOrientation, 3.0f);
 
 	SetGuardState(EAIState::Suspicious);
+
+	// Stop patrolling
+	AController* Controller = GetController();
+	if (Controller)
+	{
+		Controller->StopMovement();
+	}
 }
 
+// *************************************************************************************************
 void AFPSAIGuard::ResetOrientation()
 {
 	// If im alerted..
@@ -92,8 +117,15 @@ void AFPSAIGuard::ResetOrientation()
 	SetActorRotation(OriginalRotation);
 
 	SetGuardState(EAIState::Idle);
+
+	// Patrolling has stopped, if were are a patrolling pawn, pick a new point
+	if (bPatrol)
+	{
+		MoveToNextPatrolPoint();
+	}
 }
 
+// *************************************************************************************************
 void AFPSAIGuard::SetGuardState(EAIState NewState)
 {
 	// If the states are the same...
@@ -110,10 +142,39 @@ void AFPSAIGuard::SetGuardState(EAIState NewState)
 	OnStateChanged(GuardState);
 }
 
+// *************************************************************************************************
+void AFPSAIGuard::MoveToNextPatrolPoint()
+{
+	// Assign to next patrol point
+	if (CurrentPatrolPoint == nullptr || CurrentPatrolPoint == SecondPatrolPoint)
+	{
+		CurrentPatrolPoint = FirstPatrolPoint;
+	}
+	else
+	{
+		CurrentPatrolPoint = SecondPatrolPoint;
+	}
+
+	UNavigationSystem::SimpleMoveToActor(GetController(), CurrentPatrolPoint);
+}
+
+// *************************************************************************************************
 // Called every frame
 void AFPSAIGuard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Patrol Goal Checks
+	if (CurrentPatrolPoint)
+	{
+		FVector Delta = GetActorLocation() - CurrentPatrolPoint->GetActorLocation();
+		float DistanceToGoal = Delta.Size();
+
+		// Check to see if we are within 200 units of our goal, otherwise pick a new one
+		if (DistanceToGoal < 200)
+		{
+			MoveToNextPatrolPoint();
+		}
+	}
 }
 

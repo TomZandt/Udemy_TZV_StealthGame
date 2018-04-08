@@ -8,7 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/PawnNoiseEmitterComponent.h"
 
-
+// *************************************************************************************************
 AFPSCharacter::AFPSCharacter()
 {
 	// Create a CameraComponent	
@@ -33,7 +33,7 @@ AFPSCharacter::AFPSCharacter()
 	NoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
 }
 
-
+// *************************************************************************************************
 void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// set up gameplay key bindings
@@ -49,7 +49,7 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 }
 
-
+// *************************************************************************************************
 void AFPSCharacter::Fire()
 {
 	// try and fire a projectile
@@ -85,7 +85,7 @@ void AFPSCharacter::Fire()
 	}
 }
 
-
+// *************************************************************************************************
 void AFPSCharacter::MoveForward(float Value)
 {
 	if (Value != 0.0f)
@@ -95,7 +95,7 @@ void AFPSCharacter::MoveForward(float Value)
 	}
 }
 
-
+// *************************************************************************************************
 void AFPSCharacter::MoveRight(float Value)
 {
 	if (Value != 0.0f)

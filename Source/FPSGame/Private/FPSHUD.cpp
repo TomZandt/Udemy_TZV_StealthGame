@@ -7,6 +7,7 @@
 #include "CanvasItem.h"
 #include "UObject/ConstructorHelpers.h"
 
+// *************************************************************************************************
 AFPSHUD::AFPSHUD()
 {
 	// Set the crosshair texture
@@ -14,7 +15,7 @@ AFPSHUD::AFPSHUD()
 	CrosshairTex = CrosshairTexObj.Object;
 }
 
-
+// *************************************************************************************************
 void AFPSHUD::DrawHUD()
 {
 	Super::DrawHUD();
