@@ -32,6 +32,15 @@ protected:
 	UFUNCTION()
 	void OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume);
 
+	// Holds the original rotation of the guard
+	FRotator OriginalRotation;
+
+	FTimerHandle TimerHandle_ResetOrientation;
+
+	// Resets the orientation to the original rotation
+	UFUNCTION()
+	void ResetOrientation();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
