@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/PawnNoiseEmitterComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // *************************************************************************************************
 AFPSCharacter::AFPSCharacter()
@@ -136,4 +137,16 @@ void AFPSCharacter::Tick(float DeltaTime)
 		// Set the rotation
 		CameraComponent->SetRelativeRotation(NewRotation);
 	}
+}
+
+// *************************************************************************************************
+void AFPSCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	// syncronises the Guardstate variable across all clients
+	DOREPLIFETIME(AFPSCharacter, bIsCarryingObjective);
+
+	// Optimise for server only
+	//DOREPLIFETIME_CONDITION(AFPSCharacter, bIsCarryingObjective, COND_OwnerOnly);
 }

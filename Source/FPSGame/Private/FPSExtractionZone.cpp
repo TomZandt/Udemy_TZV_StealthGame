@@ -59,7 +59,4 @@ void AFPSExtractionZone::HandleOverlap(UPrimitiveComponent* OverlappedComponent,
 		// Play objective missing sound
 		UGameplayStatics::PlaySound2D(this, ObjectiveMissingSound);
 	}
-
-	// Send a log message to UE4
-	UE_LOG(LogTemp, Log, TEXT("##_TZV_## - Overlapped with extraction zone."));
 }
