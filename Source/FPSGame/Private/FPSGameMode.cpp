@@ -6,6 +6,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "FPSGameState.h"
 
 // *************************************************************************************************
 AFPSGameMode::AFPSGameMode()
@@ -14,8 +15,11 @@ AFPSGameMode::AFPSGameMode()
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/Blueprints/BP_Player"));
 	DefaultPawnClass = PlayerPawnClassFinder.Class;
 
-	// use our custom HUD class
+	// Use our custom HUD class
 	HUDClass = AFPSHUD::StaticClass();
+
+	// Use our custom game state
+	GameStateClass = AFPSGameState::StaticClass();
 }
 
 // *************************************************************************************************
@@ -24,9 +28,6 @@ void AFPSGameMode::CompleteMission(APawn* InstigatorPawn, bool bIsMissionSuccess
 	// If there is a pawn...
 	if (InstigatorPawn)
 	{
-		// Disable its input.
-		InstigatorPawn->DisableInput(nullptr);
-
 		if (SpectatingViewPointClass)
 		{
 			TArray<AActor*> ReturnedActors;
@@ -52,6 +53,16 @@ void AFPSGameMode::CompleteMission(APawn* InstigatorPawn, bool bIsMissionSuccess
 		{
 			UE_LOG(LogTemp, Warning, TEXT("##_TZV_## - (FPSGameMode.cpp) - SpectatingViewPointClass is nullptr. Cannot change spectating view target."))
 		}
+	}
+
+	// Get a reference to the game state
+	AFPSGameState* GS = GetGameState<AFPSGameState>();
+
+	// If the gamestate is found
+	if (GS)
+	{
+		// Call mission complete multicast
+		GS->MulticastOnMissionComplete(InstigatorPawn, bIsMissionSuccess);
 	}
 
 	// Auto call the BP version
