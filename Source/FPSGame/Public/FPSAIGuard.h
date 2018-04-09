@@ -51,10 +51,15 @@ protected:
 	void ResetOrientation();
 
 	// Holds the guards state
+	UPROPERTY(ReplicatedUsing = OnRep_GuardState)
 	EAIState GuardState;
 
 	// Sets the state of the guard
 	void SetGuardState(EAIState NewState);
+
+	// Called only on clients
+	UFUNCTION()
+	void OnRep_GuardState();
 
 	// Called if the guards states changes
 	UFUNCTION(BlueprintImplementableEvent, Category = "AI")

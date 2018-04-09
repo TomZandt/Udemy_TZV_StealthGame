@@ -5,6 +5,7 @@
 #include "DrawDebugHelpers.h"
 #include "FPSGameMode.h"
 #include "AI/Navigation/NavigationSystem.h"
+#include "Net/UnrealNetwork.h"
 
 // *************************************************************************************************
 // Sets default values
@@ -137,8 +138,13 @@ void AFPSAIGuard::SetGuardState(EAIState NewState)
 
 	// Set to new state
 	GuardState = NewState;
+	OnRep_GuardState(); // Also call on clients to keep in sync
+}
 
-	// Call on state changed for blueprint
+// *************************************************************************************************
+void AFPSAIGuard::OnRep_GuardState()
+{
+	// This stuff is only called on clients
 	OnStateChanged(GuardState);
 }
 
@@ -176,5 +182,14 @@ void AFPSAIGuard::Tick(float DeltaTime)
 			MoveToNextPatrolPoint();
 		}
 	}
+}
+
+// *************************************************************************************************
+void AFPSAIGuard::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	// syncronises the Guardstate variable across all clients
+	DOREPLIFETIME(AFPSAIGuard, GuardState);
 }
 
