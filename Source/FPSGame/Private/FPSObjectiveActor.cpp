@@ -20,6 +20,9 @@ AFPSObjectiveActor::AFPSObjectiveActor()
 	SphereComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 	SphereComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	SphereComp->SetupAttachment(MeshComp);
+
+	// Tell server
+	SetReplicates(true);
 }
 
 // *************************************************************************************************
@@ -44,15 +47,19 @@ void AFPSObjectiveActor::NotifyActorBeginOverlap(AActor* OtherActor)
 	// Implement our own override:
 	PlayEffects();
 
-	// If my actor has collided...
-	AFPSCharacter* MyCharacter = Cast<AFPSCharacter>(OtherActor);
-	if (MyCharacter)
+	// If i am the server
+	if (Role == ROLE_Authority)
 	{
-		// Set carrying to true
-		MyCharacter->bIsCarryingObjective = true;
+		// If my actor has collided...
+		AFPSCharacter* MyCharacter = Cast<AFPSCharacter>(OtherActor);
+		if (MyCharacter)
+		{
+			// Set carrying to true
+			MyCharacter->bIsCarryingObjective = true;
 
-		// Destroy objective actor
-		Destroy();
+			// Destroy objective actor
+			Destroy();
+		}
 	}
 }
 
