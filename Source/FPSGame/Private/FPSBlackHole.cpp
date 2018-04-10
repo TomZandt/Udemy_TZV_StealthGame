@@ -56,11 +56,10 @@ void AFPSBlackHole::Tick(float DeltaTime)
 		{
 			// Component needs to be simulating to apply force
 			const float SphereRadius = OuterSphereComponent->GetScaledSphereRadius();
-			const float ForceStrength = -2000.0f;
+			const float ForceStrength = -5000.0f;
 
 			PrimitiveComponent->AddRadialForce(GetActorLocation(), SphereRadius, ForceStrength, ERadialImpulseFalloff::RIF_Constant, true);
 		}
-
 	}
 }
 
