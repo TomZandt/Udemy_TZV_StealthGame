@@ -39,13 +39,18 @@ void AFPSGameMode::CompleteMission(APawn* InstigatorPawn, bool bIsMissionSuccess
 				// Target equals the first entry.
 				AActor* NewViewTarget = ReturnedActors[0];
 
-				// Get a reference to the player controller
-				APlayerController* PC = Cast<APlayerController>(InstigatorPawn->GetController());
-				// If there is a player controller...
-				if (PC)
+				// Get all the player controllers in the game
+				for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; It++)
 				{
-					// Blend to the new view target.
-					PC->SetViewTargetWithBlend(NewViewTarget, 1.5f, EViewTargetBlendFunction::VTBlend_Cubic);
+					// Get a reference to the player controller
+					APlayerController* PC = It->Get();
+
+					// If there is a player controller...
+					if (PC)
+					{
+						// Blend to the new view target.
+						PC->SetViewTargetWithBlend(NewViewTarget, 1.5f, EViewTargetBlendFunction::VTBlend_Cubic);
+					}
 				}
 			}
 		}
